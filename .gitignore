@@ -55,3 +55,6 @@ google-services.json
 freeline.py
 freeline/
 freeline_project_description.json
+
+.idea/markdown-navigator-enh.xml
+.idea/markdown-navigator.xml
