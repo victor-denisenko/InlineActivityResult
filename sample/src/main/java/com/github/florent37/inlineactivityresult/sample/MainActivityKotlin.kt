@@ -5,9 +5,10 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.github.florent37.inlineactivityresult.request.Request
 import com.github.florent37.inlineactivityresult.kotlin.startForResult
+import com.github.florent37.inlineactivityresult.request.Request
 import com.github.florent37.inlineactivityresult.request.RequestFabric
 import kotlinx.android.synthetic.main.activity_request.*
 
@@ -34,10 +35,15 @@ class MainActivityKotlin : AppCompatActivity() {
 
     fun myMethod(request: Request) {
         startForResult(request) { result ->
-            val imageBitmap = result.data?.extras?.get("data") as Bitmap
-            resultView.setImageBitmap(imageBitmap)
-        }.onFailed { result ->
+            val imageBitmap = result.data?.extras?.get("data") as Bitmap?
 
+            if (resultView != null) {
+                resultView.setImageBitmap(imageBitmap)
+            } else {
+                Toast.makeText(this, "Cannot show image", Toast.LENGTH_SHORT).show()
+            }
+        }.onFailed { result ->
+            Toast.makeText(this, "Cannot show image", Toast.LENGTH_SHORT).show()
         }
     }
 }

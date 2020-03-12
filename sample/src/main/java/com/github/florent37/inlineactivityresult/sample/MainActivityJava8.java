@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -42,16 +43,32 @@ public class MainActivityJava8 extends AppCompatActivity {
         });
     }
 
-    private void myMethod(Request request){
+    private void myMethod(Request request) {
         new InlineActivityResult(this)
                 .startForResult(request)
                 .onSuccess(result -> {
-                    Bundle extras = result.getData().getExtras();
-                    Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    resultView.setImageBitmap(imageBitmap);
+                    Intent data = result.getData();
+
+                    Bundle extras;
+
+                    if (data != null) {
+                        extras = data.getExtras();
+
+                        Bitmap imageBitmap;
+
+                        if (extras != null) {
+                            imageBitmap = (Bitmap) extras.get("data");
+
+                            resultView.setImageBitmap(imageBitmap);
+
+                            return;
+                        }
+                    }
+
+                    Toast.makeText(MainActivityJava8.this, "Cannot show image", Toast.LENGTH_SHORT).show();
                 })
                 .onFail(result -> {
-
+                    Toast.makeText(MainActivityJava8.this, "Cannot show image", Toast.LENGTH_SHORT).show();
                 });
     }
 }

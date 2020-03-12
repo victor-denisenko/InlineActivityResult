@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,6 +20,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
+import io.reactivex.observers.DisposableObserver;
 
 public class MainActivityRx extends AppCompatActivity {
 
@@ -55,14 +57,37 @@ public class MainActivityRx extends AppCompatActivity {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(mapper)
-                .subscribe(result -> {
-                    Bundle extras = result.getData().getExtras();
-                    Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    resultView.setImageBitmap(imageBitmap);
-                }, throwable -> {
-                    if (throwable instanceof RxInlineActivityResult.Error) {
-                        final Result result = ((RxInlineActivityResult.Error) throwable).getResult();
+                .subscribe(new DisposableObserver<Result>() {
+                    @Override
+                    public void onNext(Result result) {
+                        Intent data = result.getData();
 
+                        Bundle extras;
+
+                        if (data != null) {
+                            extras = data.getExtras();
+
+                            Bitmap imageBitmap;
+
+                            if (extras != null) {
+                                imageBitmap = (Bitmap) extras.get("data");
+
+                                resultView.setImageBitmap(imageBitmap);
+
+                                return;
+                            }
+                        }
+
+                        Toast.makeText(MainActivityRx.this, "Cannot show image", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(MainActivityRx.this, "Cannot show image", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
 
                     }
                 });

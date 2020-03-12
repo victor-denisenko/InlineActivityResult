@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.florent37.inlineactivityresult.request.Request
 import com.github.florent37.inlineactivityresult.kotlin.InlineActivityResultException
@@ -45,10 +46,15 @@ class MainActivityKotlinCoroutine : AppCompatActivity() {
         try {
             val result = startForResult(request)
 
-            val imageBitmap = result.data?.extras?.get("data") as Bitmap
-            resultView.setImageBitmap(imageBitmap)
-        } catch (e: InlineActivityResultException) {
+            val imageBitmap = result.data?.extras?.get("data") as Bitmap?
 
+            if (resultView != null) {
+                resultView.setImageBitmap(imageBitmap)
+            } else {
+                Toast.makeText(this@MainActivityKotlinCoroutine, "Cannot show image", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: InlineActivityResultException) {
+            Toast.makeText(this@MainActivityKotlinCoroutine, "Cannot show image", Toast.LENGTH_SHORT).show()
         }
     }
 
