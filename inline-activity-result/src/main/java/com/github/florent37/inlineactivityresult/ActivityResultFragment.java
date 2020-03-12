@@ -20,7 +20,7 @@ public class ActivityResultFragment extends Fragment {
 
     private static final String INTENT_TO_START = "INTENT_TO_START";
 
-    private static final int REQUEST_CODE = 24; // [0;65535]
+    static final int REQUEST_CODE = 24; // [0;65535]
 
     @Nullable
     private Request request;
@@ -58,6 +58,11 @@ public class ActivityResultFragment extends Fragment {
 
         executeRequest();
     }
+
+    /*@Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(INTENT_TO_START, request);
+    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -129,6 +134,12 @@ public class ActivityResultFragment extends Fragment {
         setArguments(args);
     }
 
+    /**
+     * Checks whether the given request code is a valid code by masking it with 0xffff0000. Throws
+     * an {@link IllegalArgumentException} if the code is not valid.
+     * <p>
+     * From FragmentActivity#checkForValidRequestCode(int)
+     */
     private int checkForValidRequestCode(int requestCode) {
         if ((requestCode & 0xffff0000) != 0) {
             throw new IllegalArgumentException("Can only use lower 16 bits for requestCode=" + requestCode);
